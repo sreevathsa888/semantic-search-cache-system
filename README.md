@@ -1,3 +1,7 @@
+![Python](https://img.shields.io/badge/Python-3.9+-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-Backend-green)
+![FAISS](https://img.shields.io/badge/FAISS-VectorSearch-orange)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
 # Semantic Search Cache System
 
 This project implements a **semantic document search system** using embeddings, vector databases, fuzzy clustering, and semantic caching.
@@ -231,6 +235,7 @@ http://127.0.0.1:8000/docs
 This opens the **FastAPI Swagger UI** for testing the endpoints.
 
 ---
+
 
 # Example Query
 
