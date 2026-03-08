@@ -25,19 +25,14 @@ Each document is treated as a searchable text document.
 flowchart TD
 
 A[User Query] --> B[FastAPI Server]
-
 B --> C[Query Embedding Model]
-
 C --> D{Semantic Cache}
 
 D -->|Cache Hit| E[Return Cached Result]
-
 D -->|Cache Miss| F[Vector Database Search]
 
 F --> G[Retrieve Similar Documents]
-
 G --> H[Store Result in Cache]
-
 H --> I[Return Result to User]
 
 subgraph Data Pipeline
