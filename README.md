@@ -1,93 +1,144 @@
 # Semantic Search Cache System
 
-This project implements a **semantic document search system** using embeddings, vector databases, fuzzy clustering, and semantic caching.  
+This project implements a **semantic document search system** using embeddings, vector databases, fuzzy clustering, and semantic caching.
 The system exposes its functionality through a **FastAPI backend API**.
 
 ---
 
-## Dataset
+# Dataset
 
 The system uses the **20 Newsgroups Dataset**, which contains approximately **20,000 documents across 20 topics**, including:
 
-- Technology
-- Politics
-- Science
-- Sports
-- Religion
+* Technology
+* Politics
+* Science
+* Sports
+* Religion
 
 Each document is treated as a searchable text document.
 
 ---
 
-## System Architecture
+# System Architecture
 
-```mermaid
-flowchart TD
-A[User Query] --> B[FastAPI Server]
-B --> C[Query Embedding Model]
-C --> D{Semantic Cache}
+```
+                +------------------+
+                |    User Query    |
+                +------------------+
+                         |
+                         v
+                +------------------+
+                |   FastAPI Server |
+                +------------------+
+                         |
+                         v
+                +----------------------+
+                | Query Embedding Model|
+                | (SentenceTransformer)|
+                +----------------------+
+                         |
+                         v
+                +------------------+
+                |   Semantic Cache |
+                +------------------+
+                    |          |
+             Cache Hit      Cache Miss
+                |              |
+                v              v
+       +----------------+   +----------------------+
+       | Return Cached  |   |  Vector DB Search    |
+       |     Result     |   |      (FAISS)          |
+       +----------------+   +----------------------+
+                                   |
+                                   v
+                        +-------------------------+
+                        | Retrieve Similar Docs   |
+                        +-------------------------+
+                                   |
+                                   v
+                        +-------------------------+
+                        | Store Result in Cache   |
+                        +-------------------------+
+                                   |
+                                   v
+                        +-------------------------+
+                        | Return Response to User |
+                        +-------------------------+
 
-D -->|Cache Hit| E[Return Cached Result]
-D -->|Cache Miss| F[Vector Database Search]
 
-F --> G[Retrieve Similar Documents]
-G --> H[Store Result in Cache]
-H --> I[Return Result to User]
+Data Processing Pipeline
+------------------------
 
-subgraph Data_Pipeline
-J[20 Newsgroups Dataset] --> K[Document Loader]
-K --> L[SentenceTransformer Embeddings]
-L --> M[FAISS Vector Database]
-L --> N[Fuzzy Clustering]
-end
-
-Technologies Used
-
-- Python
-- FastAPI
-- Sentence Transformers
-- FAISS (Facebook AI Similarity Search)
-- Scikit-learn
-- Scikit-fuzzy
-- NumPy
+20 Newsgroups Dataset
+        |
+        v
+Document Loader
+        |
+        v
+SentenceTransformer Embeddings
+        |
+        +----------------------+
+        |                      |
+        v                      v
+ FAISS Vector Database   Fuzzy Clustering
+```
 
 ---
 
-## Key Features
+# Technologies Used
 
-### 1. Semantic Document Search
-Documents are converted into vector embeddings using:
+* Python
+* FastAPI
+* Sentence Transformers
+* FAISS (Facebook AI Similarity Search)
+* Scikit-learn
+* Scikit-fuzzy
+* NumPy
 
+---
+
+# Key Features
+
+## 1. Semantic Document Search
+
+Documents are converted into vector embeddings using the model:
+
+```
 all-MiniLM-L6-v2
+```
 
-This allows the system to retrieve **semantically similar documents**, even if the words are different.
+This allows the system to retrieve **semantically similar documents**, even if the exact words differ.
 
 ---
 
-### 2. Vector Database
+## 2. Vector Database
 
 The system uses **FAISS** to store document embeddings and perform efficient similarity search.
 
 ---
 
-### 3. Fuzzy Clustering
+## 3. Fuzzy Clustering
 
 Documents are grouped using **Fuzzy C-Means clustering**, allowing a document to belong to multiple clusters with different membership strengths.
 
 Example:
+
+```
 Document → Cluster A (0.6)
 Document → Cluster B (0.4)
-
+```
 
 ---
 
-### 4. Semantic Cache
+## 4. Semantic Cache
 
 The system implements a **query cache using cosine similarity**.
 
 If a new query is similar to a previous query:
 
+```
 Similarity > 0.85
+```
 
 the system returns cached results instead of performing a new search.
 
@@ -95,126 +146,129 @@ This improves response speed.
 
 ---
 
-## API Endpoints
+# API Endpoints
 
-### Query Search
+## Query Search
 
+```
 POST /query
+```
 
+Example query:
 
-Example:
-
-
+```
 space exploration
-
-
-Response:
-
-
-{
-"cache_hit": false,
-"result": [...]
-}
-
-
----
-
-### Cache Statistics
-
-
-GET /cache/stats
-
+```
 
 Example response:
 
-
+```
 {
-"total_entries": 3,
-"hit_count": 1,
-"miss_count": 2,
-"hit_rate": 0.33
+ "cache_hit": false,
+ "result": [...]
 }
-
+```
 
 ---
 
-### Clear Cache
+## Cache Statistics
 
+```
+GET /cache/stats
+```
 
+Example response:
+
+```
+{
+ "total_entries": 3,
+ "hit_count": 1,
+ "miss_count": 2,
+ "hit_rate": 0.33
+}
+```
+
+---
+
+## Clear Cache
+
+```
 DELETE /cache
-
+```
 
 Response:
 
-
+```
 Cache cleared
-
+```
 
 ---
 
-## Running the Project
+# Running the Project
 
-### Install dependencies
+## Install dependencies
 
-
+```
 pip install -r requirements.txt
-
+```
 
 ---
 
-### Run the API
+## Run the API
 
-
+```
 uvicorn api.main:app --reload
-
+```
 
 ---
 
-### Open API documentation
+## Open API Documentation
 
-
+```
 http://127.0.0.1:8000/docs
+```
 
-
-This opens the **FastAPI Swagger UI** for testing endpoints.
+This opens the **FastAPI Swagger UI** for testing the endpoints.
 
 ---
 
-## Example Query
+# Example Query
 
-
+```
 space exploration and nasa missions
-
+```
 
 The system retrieves documents related to:
 
-- NASA
-- satellites
-- space shuttle
-- astronomy discussions
+* NASA
+* satellites
+* space shuttle
+* astronomy discussions
 
 ---
 
-## Project Structure
+# Project Structure
+
+```
 semantic-search-cache-system
 │
 ├── api
-│ └── main.py
+│   └── main.py
 │
 ├── cache
-│ └── semantic_cache.py
+│   └── semantic_cache.py
 │
 ├── clustering
-│ └── fuzzy_cluster.py
+│   └── fuzzy_cluster.py
 │
 ├── data
-│ └── load_data.py
+│   └── load_data.py
 │
 ├── embeddings
-│ └── embedding_model.py
+│   └── embedding_model.py
 │
 ├── vectordb
-│ └── vector_store.py
+│   └── vector_store.py
 │
 ├── run_embeddings.py
 ├── run_vector_search.py
@@ -223,19 +277,19 @@ semantic-search-cache-system
 │
 ├── requirements.txt
 └── README.md
-
-
----
-
-## Future Improvements
-
-- Add Docker containerization
-- Add persistent vector storage
-- Improve clustering visualization
-- Implement distributed caching
+```
 
 ---
 
-## Author
+# Future Improvements
 
-Sreevathsa Oleti
+* Add Docker containerization
+* Add persistent vector storage
+* Improve clustering visualization
+* Implement distributed caching
+
+---
+
+# Author
+
+Sree Vathsa Oleti
