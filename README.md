@@ -209,6 +209,7 @@ Cache cleared
 ```
 
 ---
+<img width="1919" height="1036" alt="image" src="https://github.com/user-attachments/assets/e6e1f361-80e9-4266-a393-0a4e02be743b" />
 
 # Running the Project
 
