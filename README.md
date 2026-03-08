@@ -21,23 +21,31 @@ Each document is treated as a searchable text document.
 
 ## System Architecture
 
-The pipeline of the system is:
+```mermaid
+flowchart TD
 
-Dataset  
-↓  
-Document Loader  
-↓  
-Sentence Transformer Embeddings  
-↓  
-FAISS Vector Database  
-↓  
-Fuzzy Clustering (Fuzzy C-Means)  
-↓  
-Semantic Cache  
-↓  
-FastAPI Service
+A[User Query] --> B[FastAPI Server]
 
----
+B --> C[Query Embedding Model]
+
+C --> D{Semantic Cache}
+
+D -->|Cache Hit| E[Return Cached Result]
+
+D -->|Cache Miss| F[Vector Database Search]
+
+F --> G[Retrieve Similar Documents]
+
+G --> H[Store Result in Cache]
+
+H --> I[Return Result to User]
+
+subgraph Data Pipeline
+J[20 Newsgroups Dataset] --> K[Document Loader]
+K --> L[SentenceTransformer Embeddings]
+L --> M[FAISS Vector Database]
+L --> N[Fuzzy Clustering]
+end
 
 ## Technologies Used
 
