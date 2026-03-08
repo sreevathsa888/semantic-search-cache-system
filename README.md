@@ -23,7 +23,6 @@ Each document is treated as a searchable text document.
 
 ```mermaid
 flowchart TD
-
 A[User Query] --> B[FastAPI Server]
 B --> C[Query Embedding Model]
 C --> D{Semantic Cache}
@@ -35,14 +34,14 @@ F --> G[Retrieve Similar Documents]
 G --> H[Store Result in Cache]
 H --> I[Return Result to User]
 
-subgraph Data Pipeline
+subgraph Data_Pipeline
 J[20 Newsgroups Dataset] --> K[Document Loader]
 K --> L[SentenceTransformer Embeddings]
 L --> M[FAISS Vector Database]
 L --> N[Fuzzy Clustering]
 end
 
-## Technologies Used
+Technologies Used
 
 - Python
 - FastAPI
